@@ -10,7 +10,14 @@
         }
     ],
     "repositories": [
-        {"type": "composer", "url": "https://releases.whmcs.com/v2/"}
+        {
+            "type": "composer",
+            "url": "https://releases.whmcs.com/"
+        },
+        {
+            "type": "composer",
+            "url": "https://releases.whmcs.com/v2/"
+        }
     ],
     "require": {
         "whmcs/whmcs": "7.9.0.*"
@@ -27,5 +34,10 @@
         "post-update-cmd": [
             "WHMCS\\Installer\\Composer\\Hooks\\ComposerInstallerHook::postUpdateCmd"
         ]
-    }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
