@@ -1,0 +1,31 @@
+{
+    "name": "strausmann/whmcsinstaller",
+    "description": "Installs the latest release of WHMCS via composer",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bjoern Strausmann",
+            "email": "bjoern@strausmann.net"
+        }
+    ],
+    "repositories": [
+        {"type": "composer", "url": "https://releases.whmcs.com/v2/"}
+    ],
+    "require": {
+        "whmcs/whmcs": "7.9.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WHMCS\\": "vendor/whmcs/whmcs/vendor/whmcs/whmcs-foundation/lib"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "WHMCS\\Installer\\Composer\\Hooks\\ComposerInstallerHook::postInstallCmd"
+        ],
+        "post-update-cmd": [
+            "WHMCS\\Installer\\Composer\\Hooks\\ComposerInstallerHook::postUpdateCmd"
+        ]
+    }
+}
