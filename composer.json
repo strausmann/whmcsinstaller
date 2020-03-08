@@ -20,8 +20,8 @@
         }
     ],
     "require": {
-        "whmcs/whmcs": "^7.0",
-        "ext-ioncube": "^10.0"
+        "whmcs/whmcs": "^7.5",
+        "ext-ioncube-loader": "^10.3"
     },
     "autoload": {
         "psr-4": {
