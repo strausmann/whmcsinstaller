@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "whmcs/whmcs": "7.9.0.*"
+        "whmcs/whmcs": "^7.0"
     },
     "autoload": {
         "psr-4": {
