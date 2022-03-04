@@ -12,10 +12,6 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "https://releases.whmcs.com/"
-        },
-        {
-            "type": "composer",
             "url": "https://releases.whmcs.com/v2/"
         }
     ],
