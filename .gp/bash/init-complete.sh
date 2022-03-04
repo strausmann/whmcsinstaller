@@ -13,10 +13,6 @@
 # Load logger
 . .gp/bash/workspace-init-logger.sh
 
-# Inject routes/web.php
-allow_mixed_web=$(bash .gp/bash/utils.sh parse_ini_value starter.ini laravel allow_mixed_web)
-[[ $allow_mixed_web != 0 ]] && bash .gp/bash/directives/allow-mixed-web.sh
-
 # Add Workspace/Project composer bin folder to $PATH
 export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"
 

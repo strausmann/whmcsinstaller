@@ -14,24 +14,6 @@
 # Load logger
 . .gp/bash/workspace-init-logger.sh
 
-# Rake tasks (will be written to ~/.rake).
-# Some rake tasks are dynamic and depend on the configuration in starter.ini
-if [[ $(bash .gp/bash/utils.sh parse_ini_value starter.ini github-changelog-generator install) ]]; then
-  msg="Writing rake tasks"
-  if bash .gp/bash/init-rake-tasks.sh; then 
-    log_silent "SUCCESS: $msg"
-  else
-    log -e "ERROR: $msg"
-  fi
-fi
-git status
-# Aliases for git
-msg="git aliases have been written"
-bash .gp/bash/utils.sh add_file_to_file_after "\\[alias\\]" .gp/snippets/git/emoji-log ~/.gitconfig &&
-bash .gp/bash/utils.sh add_file_to_file_after "\\[alias\\]" .gp/snippets/git/aliases ~/.gitconfig &&
-log_silent "$msg" &&
-log_silent "try: git a    or: git aliases to see what is available."
-
 # BEGIN: Enable GPG key to sign Git commits.
 # Error handling for improper use of GPG environment variables
 err_msg_prefix1="A GPG_KEY was found but it's corresponding GPG_KEY_ID was not."

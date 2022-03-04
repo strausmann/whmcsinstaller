@@ -23,7 +23,7 @@
 #
 gls_version() {
   local hard version title file
-  hard="1.4.0"
+  hard="1.5.0"
   title="Gitpod Laravel Starter Framework"
   file="$GITPOD_REPO_ROOT"/.gp/CHANGELOG.md
   if [[ -f $file ]]; then
@@ -68,41 +68,6 @@ start_server() {
     echo "$err_msg"
     ;;
   esac
-}
-
-# add_global_rake_task
-# Description:
-# Writes a rake task multiline string ($1) to a file named by the command ($2) in ~/.rake
-#
-# Notes:
-# Depending on how the task is written you may need to
-# invoke a global rake task using the -g flag like so: rake -g hello-world
-# Do not use the .rake suffic in your command. The rake file name will
-# automatically written as to "$2.rake"
-# Any exisitng rake command in ~/.rake will be clobbered.
-#
-# Usage:
-# Example: a dynamically created hello world rake task
-# # create a safe multiline string (with variable interpolation) to pass to add_global_rake_task
-# name='Apolo'
-# rake_task_name='hello'
-# IFS='' read -r -d '' __task <<EOF
-# task "$rake_task_name" do
-#    puts "Hello $name, this is a global rake task"
-# end
-# EOF
-# bash .gp/bash/helpers.sh add_global_rake_task "$__task" "$rake_task_name"
-add_global_rake_task() {
-  local root=~/.rake
-  local file="$2.rake"
-  local err="Helpers.sh: Error: add_global_rake_task:"
-  local usage="Usage: add_global_rake_task task file.rake"
-
-  [[ -z $1 || -z $2 ]] && echo "$err requires exactly two arguments." && echo "$usage" && return
-
-  mkdir -p "$root"
-  touch -c "$root/$2"
-  echo -e "$1" > "$root/$file"
 }
 
 # show_first_run_summary
@@ -277,103 +242,6 @@ is_inited() {
   [[ -e $(inited_file) ]] && echo 1 || echo 0
 }
 # End: persistance hacks
-
-# Begin: installation information API
-# parses starter.ini for installation for the install key of a section ($1)
-get_install() {
-  bash .gp/bash/utils.sh parse_ini_value starter.ini "$1" install
-}
-
-# parses starter.ini and echos a string showing installtaion information for any installs key in the list.
-# The install key list is set in this function. The install key list is order specific.
-# phpmyadmin needs to be first, the next three installs are the frontend scaffolding installs.
-# You can add any additional installs to the end of this string delimited by a space character.
-get_installs() {
-  # Space delimited list of installs to check
-  # starter.ini must have a section named by the string and a key named install
-  # So not change the order of installs in this string, just add more to the end if needed
-  local installs='phpmyadmin react vue bootstrap'
-  for i in $installs; do
-    data+=$i:$(get_install "$i")
-  done
-  echo "$data"
-}
-
-# parses starter.ini for installation information
-# Echos 1 if any install key in list (see installs varaible in get_install function) in starter.ini
-# has a value of 1.
-# Echos 0 if no keys in the list have a value of 1
-has_installs() {
-  local result
-  result=$(get_installs | grep -oP '\d' | tr -d '[:space:]')
-  local pattern='.*[1-9].*'
-  if [[ $result =~ $pattern ]]; then
-    echo 1
-  else
-    echo 0
-  fi
-}
-
-# parses starter.ini for installation information
-# Echos 1 if the install key either react, vue or bootrap is set to 1
-# There are three possible frontend scaffolding keys: react, vue and bootstrap
-# Echos 0 if neither react, vue or bootrap has an install key value of 1
-has_frontend_scaffolding_install() {
-  local result scaff_installs
-  result=$(get_installs | grep -oP '\d' | tr -d '[:space:]')
-  local all_zeros='^[0]+$'
-  # Trim the first character from the string (this is the phpmyadmin value)
-  local installs="${result:1}"
-  # Trim the next three characters in the string (there are only three possible front end scaffolding)
-  scaff_installs="${installs:0:3}"
-  if [[ $scaff_installs =~ $all_zeros ]]; then
-    echo 0
-  else
-    echo 1
-  fi
-}
-# End: installation information API
-
-# Version to use when laravel version is set to an invalid or out of range value in starter.ini
-default_laravel_version() {
-  echo '8.*'
-}
-
-# laravel_version
-# Description:
-# Parses the larvel version from the command: php artisan --version
-#
-# Note: Do not call this function before Laravel has been installed!
-laravel_version() {
-  [[ $(php artisan --version) =~ ([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]] && echo "${BASH_REMATCH[1]}"
-}
-
-
-laravel_major_version() {
-  local ver
-  ver="$(laravel_version)"
-  echo "${ver%%.*}"
-}
-
-# Derives the laravel/ui sematic version to use based on the value set for the laravel version in starter.ini
-# Echos an empty string if the laravel major version is 5
-# Echos ^3.2.0 if the laravel major version in starter.ini is 8 or higher, lower than 5, or invalid.
-# Echos ^2.4 if the laravel major version in starter.ini is 7
-# Echos ^1.* if the laravel major version in starter.ini is 6
-laravel_ui_version() {
-  local lvm=
-  lvm=$(laravel_major_version)
-  if (( lvm >= 8 )); then
-    echo '^3.2.0' 
-  elif [[ $lvm -eq 7 ]]; then
-    echo '^2.4'
-  elif [[ $lvm -eq 6 ]]; then
-    echo '1.*'
-  else
-    # Won't get this far since laravel_major_version will use the default if out of the of range 5-8
-    echo 'helpers.sh laravel_ui_version(): Internal Error'
-  fi
-}
 
 # php_fpm_conf
 # Configures the php-fpm.conf depending on PHP version ($1) and the output file ($2)

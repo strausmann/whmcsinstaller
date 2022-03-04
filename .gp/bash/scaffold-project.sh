@@ -16,7 +16,7 @@ _log='/var/log/workspace-image.log'
 _scaff_name='laravel-starter'
 _scaff_dest="/home/gitpod/$_scaff_name"
 _lv_default='8.*'
-_lv=$(. /tmp/utils.sh parse_ini_value /tmp/starter.ini laravel version)
+_lv=$(. /tmp/utils.sh parse_ini_value /tmp/starter.ini whmcs version)
 
 # Set default if laravel version was not set in starter.ini
 [[ -z $_lv ]] && _lv="$_lv_default"
